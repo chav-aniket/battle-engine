@@ -13,9 +13,9 @@ class Poke(Move):
         super().__init__(
             name="Poke", 
             element=None, 
-            cat=Move.ATK, 
-            dmg=10,  
-            uses=10
+            cat=Move.PHYS, 
+            dmg=10, 
+            uses=25
             )
 
 class BitchSlap(Move):
@@ -23,9 +23,9 @@ class BitchSlap(Move):
         super().__init__(
             name="Bitch Slap", 
             element=None, 
-            cat=Move.ATK, 
+            cat=Move.PHYS, 
             dmg=30,  
-            uses=5
+            uses=20
             )
 
 class Heal(Move):
@@ -33,7 +33,7 @@ class Heal(Move):
         super().__init__(
             name="Heal", 
             element=None, 
-            cat=Move.REG, 
+            cat=Move.STAT, 
             heal=20,  
-            uses=10
+            uses=20
             )
