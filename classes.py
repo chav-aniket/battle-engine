@@ -4,8 +4,55 @@ Includes
     - Monster Class
     - Move Class
 """
+import os
+import random
 
 from error import useError
+
+
+class Monster:
+    '''
+    Monster class constructor
+    '''
+    def __init__(self, name, hlth=500, atk=10, dfn=10, spd=50):
+        self.name = name
+        self.level = 1
+        self.exp = 0
+        self.health = hlth
+        self.stats = [atk, dfn, spd]
+        self.buffs = [0, 0, 0]
+        self.moves = []
+    
+    @property
+    def attack(self):
+        return self.stats[0] + self.buffs[0]
+
+    @property
+    def defence(self):
+        return self.stats[1] + self.buffs[1]
+    
+    @property
+    def speed(self):
+        return self.stats[2] + self.buffs[2]
+
+    def take(self, val):
+        self.health -= val
+        if self.health < 0:
+            self.health = 0
+
+    def heal(self, val):
+        self.health += val
+    
+    def clear_stats(self):
+        self.atk_buff = 0
+        self.def_buff = 0
+        self.spd_buff = 0
+        for move in self.moves:
+            move.uses = move.max_uses
+
+    def learnMove(self, move):
+        self.moves.append(move)
+        move.addOwner(self)
 
 class Move:
     '''
@@ -56,38 +103,83 @@ class Move:
         self.owner.heal(self.heal)
         return self.heal
 
-class Monster:
-    '''
-    Monster class constructor
-    '''
-    def __init__(self, name, hlth=500, atk=10, dfn=10, spd=50):
-        self.name = name
-        self.level = 1
-        self.exp = 0
-        self.health = hlth
-        self.attack = atk
-        self.atk_buff = 0
-        self.defence = dfn
-        self.def_buff = 0
-        self.speed = spd
-        self.spd_buff = 0
-        self.moves = []
+class Battle():
+    def __init__(self, blue: Monster, red: Monster):
+        self.turn = 0
+        self.blue = blue
+        self.red = red
+        self.log = []
+        self.start()
 
-    def take(self, val):
-        self.health -= val
-        if self.health < 0:
-            self.health = 0
+    def endGame(self, msg):
+        print(msg)
+        self.blue.clear_stats()
+        self.red.clear_stats()
+        os._exit(0)
+        del self
 
-    def heal(self, val):
-        self.health += val
-    
-    def clear_stats(self):
-        self.atk_buff = 0
-        self.def_buff = 0
-        self.spd_buff = 0
-        for move in self.moves:
-            move.uses = move.max_uses
+    def checkState(self):
+        if self.blue.health <= 0:
+            self.endGame(f"{self.red.name} beat {self.blue.name}, better luck next time!")
+        elif self.red.health <= 0:
+            self.endGame(f"Congratulations, {self.blue.name} beat {self.red.name}!")
 
-    def learnMove(self, move: Move):
-        self.moves.append(move)
-        move.addOwner(self)
+    def logUpdate(self, text):
+        while len(self.log) > 5:
+            self.log.pop(0)
+        self.log.append(text)
+
+    def moveOrder(self):
+        if self.blue.speed > self.red.speed:
+            self.blue_move()
+            self.red_move()
+        else:
+            self.red_move()
+            self.blue_move()
+
+    def blue_move(self):
+        while True:
+            while True:
+                try:
+                    curr_move = int(input("Enter move number: "))
+                    if curr_move > len(self.blue.moves):
+                        raise ValueError
+                except ValueError:
+                    print("Please enter a valid number")
+                else:
+                    break
+            try:
+                self.logUpdate(self.blue.moves[curr_move-1].use(self.red))
+            except useError:
+                print("You have exhausted all uses of this move")
+            else:
+                break
+
+    def red_move(self):
+        while True:
+            try:
+                self.logUpdate(self.red.moves[random.randint(0, len(self.red.moves)-1)].use(self.blue))
+            except useError:
+                pass
+            else:
+                break
+
+    def start(self):
+        while True:
+            os.system('clear')
+            print('-------------------------------------------------')
+            print(f"Opponent: {self.red.name} - {round(self.red.health)} HP")
+            print("\n")
+            print(f"You: {self.blue.name} - {round(self.blue.health)} HP")
+            print()
+            print("Battle Log:")
+            print("===")
+            for line in self.log:
+                print(line)
+            print("===")
+            self.checkState()
+
+            print("These are your moves - ")
+            for count, move in enumerate(self.blue.moves):
+                print(f"{count+1}. {move.name} {move.uses} Uses Left")
+            self.moveOrder()
