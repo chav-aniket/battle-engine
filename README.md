@@ -1,6 +1,7 @@
 # Battle-engine
 Made for a passion project
 
+FILE TREE:
 ```
 .
 |-- classes.py
@@ -9,3 +10,5 @@ Made for a passion project
 |-- monsters.py
 |-- moves.py
 ```
+USAGE:
+`python3 main.py`
