@@ -11,6 +11,7 @@ import werkzeug
 from threading import Thread
 from signal import signal, SIGINT, SIGTERM
 
+from classes import Monster, Move
 from monsters import Chris, Thomas
 from error import useError
 
@@ -21,7 +22,7 @@ chris = Chris()
 thomas = Thomas()
 
 class Battle(Thread):
-    def __init__(self, blue, red):
+    def __init__(self, blue: Monster, red: Monster):
         self.turn = 0
         Thread.__init__(self)
         self.blue = blue

@@ -30,10 +30,10 @@ class Move:
         self.max_uses = uses
         self.uses = uses
     
-    def addOwner(self, owner):
+    def addOwner(self, owner: Monster):
         self.owner = owner
     
-    def use(self, opponent):
+    def use(self, opponent: Monster):
         if self.uses == 0:
             raise useError
         self.uses -= 1
@@ -47,7 +47,7 @@ class Move:
             dmg = self.use_attack(opponent)
             heal = self.use_regen()
 
-    def use_attack(self, opponent):
+    def use_attack(self, opponent: Monster):
         dmg = (self.owner.attack * self.damage) * (100/(100+opponent.defence))
         opponent.take(dmg)
         return dmg
@@ -88,6 +88,6 @@ class Monster:
         for move in self.moves:
             move.uses = move.max_uses
 
-    def learnMove(self, move):
+    def learnMove(self, move: Move):
         self.moves.append(move)
         move.addOwner(self)
