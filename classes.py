@@ -14,10 +14,11 @@ class Monster:
     '''
     Monster class constructor
     '''
-    def __init__(self, name, hlth=500, atk=10, dfn=10, spd=50):
+    def __init__(self, name, element=None, hlth=500, atk=10, dfn=10, spd=50):
         self.name = name
         self.level = 1
         self.exp = 0
+        self.element = element
         self.health = hlth
         self.stats = [atk, dfn, spd]
         self.buffs = [0, 0, 0]
@@ -44,9 +45,7 @@ class Monster:
         self.health += val
     
     def clear_stats(self):
-        self.atk_buff = 0
-        self.def_buff = 0
-        self.spd_buff = 0
+        self.buffs = [0, 0, 0]
         for move in self.moves:
             move.uses = move.max_uses
 
@@ -57,17 +56,12 @@ class Monster:
 class Move:
     '''
     Move class constructor
-
-    Categories:
-        - ATK / 0
-        - REG / 1
-        - ATKREG / 2
     '''
-    ATK = 0
-    REG = 1
-    ATKREG = 2
+    PHYS = 0
+    SPEC = 1
+    STAT = 2
 
-    def __init__(self, name, element=None, cat=ATK, dmg=0, heal=0, uses=10):
+    def __init__(self, name, element=None, cat=PHYS, dmg=0, heal=0, uses=10):
         self.name = name
         self.category = cat
         self.element = element
@@ -84,18 +78,29 @@ class Move:
         if self.uses == 0:
             raise useError
         self.uses -= 1
-        if self.category == Move.ATK:
+        if self.category == Move.PHYS:
             dmg = self.use_attack(opponent)
             return f"{self.owner.name} used {self.name} and dealt {dmg} damage!"
-        elif self.category == Move.REG:
+        elif self.category == Move.STAT:
             heal = val = self.use_regen()
             return f"{self.owner.name} used {self.name} to heal for {heal}!"
-        elif self.category == Move.ATKREG: 
+        elif self.category == Move.SPEC: 
             dmg = self.use_attack(opponent)
             heal = self.use_regen()
 
+    def modifier(self, opponent):
+        ret = 1
+        if self.element == self.owner.element:
+            ret += 0.2
+        # if opponent.element in WEAKNESSES[self.element]:
+        #     ret += 0.2
+        # if opponent.element in RESISTANCES[self.element]:
+        #     ret -= 0.2
+        return ret
+
     def use_attack(self, opponent: Monster):
-        dmg = (self.owner.attack * self.damage) * (100/(100+opponent.defence))
+        dmg = (7 + self.owner.level/200 * self.damage * self.owner.attack/opponent.defence) * self.modifier(opponent)
+        # dmg = (self.owner.attack * self.damage) * (100/(100+opponent.defence))
         opponent.take(dmg)
         return dmg
 
