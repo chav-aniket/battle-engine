@@ -10,11 +10,107 @@ import random
 from error import useError
 
 
+class Element:
+    '''
+    Element class
+    '''
+    BASIC       = 0
+    FIRE        = 1
+    WATER       = 2
+    GRASS       = 3
+    ELECTRIC    = 4
+    WIND        = 5
+    EARTH       = 6
+    ROCK        = 7
+    ICE         = 8
+    POISON      = 9
+    METAL       = 10
+    FIGHTING    = 11
+    MYSTIC      = 12
+    LIGHT       = 13
+    DARK        = 14
+
+    MATCHUPS = [
+        [1, 1, 1, 1, 1, 1, 1, 0.5, 1, 1, 0.5, 1, 1, 1, 1], # BASIC
+        [1, 0.5, 0.5, 2, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1], # FIRE
+        [1, 2, 0.5, 0.5, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1], # WATER
+        [1, 0.5, 2, 0.5, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1], # GRASS
+        [1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1], # ELECTRIC
+        [1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1], # WIND
+        [1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1], # EARTH
+        [1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1], # ROCK
+        [1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1], # ICE
+        [1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1], # POISON
+        [1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1], # METAL
+        [1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1], # FIGHTING
+        [1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1], # MYSTIC
+        [1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1], # LIGHT
+        [1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1]  # DARK
+    ]
+
+    @classmethod
+    def multiplier(cls, type1, type2):
+        return MATCHUPS[type1, type2]
+
+    # WEAKNESS = {
+    #     BASIC: [FIGHTING],
+    #     WATER: [],
+    #     GRASS: [],
+    #     FIRE: [],
+    #     ELECTRIC: [],
+    #     WIND: [],
+    #     EARTH: [],
+    #     ROCK: [],
+    #     ICE: [],
+    #     POISON: [],
+    #     METAL: [],
+    #     LIGHT: [],
+    #     DARK: [],
+    #     MYSTIC: [],
+    #     FIGHTING: []
+    # }
+
+    # RESISTANT = {
+    #     BASIC: [FIGHTING],
+    #     WATER: [],
+    #     GRASS: [],
+    #     FIRE: [],
+    #     ELECTRIC: [],
+    #     WIND: [],
+    #     EARTH: [],
+    #     ROCK: [],
+    #     ICE: [],
+    #     POISON: [],
+    #     METAL: [],
+    #     LIGHT: [],
+    #     DARK: [],
+    #     MYSTIC: [],
+    #     FIGHTING: []
+    # }
+
+    #  IMMUNE = {
+    #     BASIC: [FIGHTING],
+    #     WATER: [],
+    #     GRASS: [],
+    #     FIRE: [],
+    #     ELECTRIC: [],
+    #     WIND: [],
+    #     EARTH: [],
+    #     ROCK: [],
+    #     ICE: [],
+    #     POISON: [],
+    #     METAL: [],
+    #     LIGHT: [],
+    #     DARK: [],
+    #     MYSTIC: [],
+    #     FIGHTING: []
+    }
+
 class Monster:
     '''
     Monster class constructor
     '''
-    def __init__(self, name, element=None, hlth=500, atk=10, dfn=10, spd=50):
+    def __init__(self, name, element=Element.BASIC, hlth=500, atk=10, dfn=10, spd=50):
         self.name = name
         self.level = 1
         self.exp = 0
@@ -61,7 +157,7 @@ class Move:
     SPEC = 1
     STAT = 2
 
-    def __init__(self, name, element=None, cat=PHYS, dmg=0, heal=0, uses=10):
+    def __init__(self, name, element=Element.BASIC, cat=PHYS, dmg=0, heal=0, uses=10):
         self.name = name
         self.category = cat
         self.element = element
