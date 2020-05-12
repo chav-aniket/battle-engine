@@ -4,31 +4,32 @@ Includes:
     - Monster Class
 """
 
-from classes import Monster
+from classes import Element, Monster
 from moves import *
 
-class Thomas(Monster):
+class Turtwig(Monster):
     def __init__(self):
         super().__init__(
-            name="Thomas", 
-            hlth=500, 
-            atk=10, 
-            dfn=50, 
-            spd=50
+            name="Turtwig", 
+            element=Element.GRASS, 
+            hlth=55, 
+            atk=68, 
+            dfn=64, 
+            spd=31
             )
-        self.learnMove(BitchSlap())
-        self.learnMove(Poke())
-        self.learnMove(Heal())
+        self.learnMove(Tackle())
+        self.learnMove(Absorb())
 
-class Chris(Monster):
+class Chimchar(Monster):
     def __init__(self):
         super().__init__(
-            name="Chris", 
-            hlth=1000, 
-            atk=20, 
-            dfn=60, 
-            spd=10
+            name="Chimchar", 
+            element=Element.FIRE, 
+            hlth=44, 
+            atk=58, 
+            dfn=44, 
+            spd=61
             )
-        self.learnMove(BitchSlap())
-        self.learnMove(Poke())
-        self.learnMove(Heal())
+        self.learnMove(Leer())
+        self.learnMove(Scratch())
+        self.learnMove(Ember())
