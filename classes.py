@@ -14,6 +14,7 @@ class Element:
     '''
     Element class
     '''
+    NONE        = -1
     BASIC       = 0
     FIRE        = 1
     WATER       = 2
@@ -61,22 +62,36 @@ class Monster:
         self.level = 1
         self.exp = 0
         self.element = element
+        self.max_health = hlth
         self.health = hlth
         self.stats = [atk, dfn, spd]
         self.buffs = [0, 0, 0]
         self.moves = []
-    
+        self.status = Status.NONE
+
+    def buff(self, stat, numStages):
+        self.buffs[stat] += numStages
+
     @property
     def attack(self):
-        return self.stats[0] + self.buffs[0]
+        if self.buffs[0] > 0:
+            return self.stats[0] * ((2+self.buffs[0])/2)
+        else:
+            return self.stats[0] * (2/(-2+self.buffs[0]))
 
     @property
     def defence(self):
-        return self.stats[1] + self.buffs[1]
-    
+        if self.buffs[2] > 0:
+            return self.stats[1] * ((2+self.buffs[0])/2)
+        else:
+            return self.stats[1] * (2/(-2+self.buffs[0]))
+
     @property
     def speed(self):
-        return self.stats[2] + self.buffs[2]
+        if self.buffs[2] > 0:
+            return self.stats[2] * ((2+self.buffs[0])/2)
+        else:
+            return self.stats[2] * (2/(-2+self.buffs[0]))
 
     def take(self, val):
         self.health -= val
@@ -85,6 +100,8 @@ class Monster:
 
     def heal(self, val):
         self.health += val
+        if self.health > self.max_health:
+            self.health = self.max_health
     
     def clear_stats(self):
         self.buffs = [0, 0, 0]
@@ -95,6 +112,22 @@ class Monster:
         self.moves.append(move)
         move.addOwner(self)
 
+class Status:
+    NONE    = 0
+    STUN    = 1
+    BURN    = 2
+    SLEEP   = 3
+    STATIC  = 4
+    POISON  = 5
+    COUNTER = 6
+
+    @classmethod
+    def status(cls, monster: Monster, status):
+        if status == cls.NONE:
+            pass
+        elif status == cls.STUN:
+            pass
+
 class Move:
     '''
     Move class constructor
@@ -103,7 +136,7 @@ class Move:
     SPEC = 1
     STAT = 2
 
-    def __init__(self, name, element=Element.BASIC, cat=PHYS, dmg=0, heal=0, accuracy=100, uses=10):
+    def __init__(self, name, element=Element.BASIC, cat=PHYS, dmg=0, heal=0, accuracy=100, priority=False, uses=10):
         self.name = name
         self.owner = None
         self.category = cat
@@ -111,35 +144,22 @@ class Move:
         self.damage = dmg
         self.heal = heal
         self.accuracy = accuracy
+        self.priority = priority
         self.max_uses = uses
         self.uses = uses
-    
+
     def addOwner(self, owner: Monster):
         self.owner = owner
-    
-    def use(self, opponent: Monster):
-        if self.uses == 0:
-            raise useError
-        self.uses -= 1
-        if self.category == Move.PHYS:
-            dmg = self.use_attack(opponent)
-            return f"{self.owner.name} used {self.name} and dealt {dmg} damage!"
-        elif self.category == Move.STAT:
-            heal = val = self.use_regen()
-            return f"{self.owner.name} used {self.name} to heal for {heal}!"
-        elif self.category == Move.SPEC: 
-            dmg = self.use_attack(opponent)
-            heal = self.use_regen()
 
-    def use_attack(self, opponent: Monster):
+    def useCheck(self):
+        if self.uses == 0:
+            print("This move has no uses left!")
+            raise useError
+
+    def damageCalc(self, opponent: Monster):
         mul = Element.multiplier(self.element, opponent.element)
         dmg = round((7 + (self.owner.level/200) * self.damage * (self.owner.attack/opponent.defence)) * mul)
-        opponent.take(dmg)
         return dmg
-
-    def use_regen(self):
-        self.owner.heal(self.heal)
-        return self.heal
 
 class Battle():
     def __init__(self, blue: Monster, red: Monster):
@@ -147,6 +167,8 @@ class Battle():
         self.blue = blue
         self.red = red
         self.log = []
+        # while True:
+        #     self.
         self.start()
 
     def endGame(self, msg):
@@ -167,57 +189,70 @@ class Battle():
             self.log.pop(0)
         self.log.append(text)
 
-    def moveOrder(self):
-        if self.blue.speed > self.red.speed:
-            self.blue_move()
-            self.red_move()
-        else:
-            self.red_move()
-            self.blue_move()
+    def blueMove(self):
+        print("These are your moves - ")
+        for count, move in enumerate(self.blue.moves):
+            print(f"{count+1}. {move.name} {move.uses} Uses Left")
 
-    def blue_move(self):
         while True:
-            while True:
-                try:
-                    curr_move = int(input("Enter move number: "))
-                    if curr_move > len(self.blue.moves):
-                        raise ValueError
-                except ValueError:
-                    print("Please enter a valid number")
-                else:
-                    break
             try:
-                self.logUpdate(self.blue.moves[curr_move-1].use(self.red))
-            except useError:
-                print("You have exhausted all uses of this move")
+                curr_move = int(input("Enter move number: "))
+                if curr_move > len(self.blue.moves):
+                    raise ValueError
+            except ValueError:
+                print("Please enter a valid number")
             else:
-                break
+                move = self.blue.moves[curr_move-1]
+                try:
+                    move.useCheck()
+                except useError:
+                    pass
+                else:
+                    return move
 
-    def red_move(self):
+    def redMove(self):
         while True:
             try:
-                self.logUpdate(self.red.moves[random.randint(0, len(self.red.moves)-1)].use(self.blue))
+                move = self.red.moves[random.randint(0, len(self.red.moves)-1)]
             except useError:
                 pass
             else:
-                break
+                return move
 
-    def start(self):
-        while True:
-            os.system('clear')
-            print('-------------------------------------------------')
-            print(f"Opponent: {self.red.name} - {round(self.red.health)} HP")
-            print("\n")
-            print(f"You: {self.blue.name} - {round(self.blue.health)} HP")
-            print()
-            print("Battle Log:")
-            print("===")
-            for line in self.log:
-                print(line)
-            print("===")
-            self.checkState()
+    def blueFirst(self, blue_move: Move, red_move: Move):
+        blue_move.use(self.red)
+        self.checkState()
+        red_move.use(self.blue)
+        self.checkState()
 
-            print("These are your moves - ")
-            for count, move in enumerate(self.blue.moves):
-                print(f"{count+1}. {move.name} {move.uses} Uses Left")
-            self.moveOrder()
+    def redFirst(self, blue_move: Move, red_move: Move):
+        red_move.use(self.blue)
+        self.checkState()
+        blue_move.use(self.red)
+        self.checkState()
+
+    def display(self):
+        os.system('clear')
+        print('-------------------------------------------------')
+        print(f"Opponent: {self.red.name} - {round(self.red.health)} HP")
+        print("\n")
+        print(f"You: {self.blue.name} - {round(self.blue.health)} HP")
+        print()
+        print("Battle Log:")
+        print("===")
+        for line in self.log:
+            print(line)
+        print("===")
+
+    def decide(self):
+        blue_move = self.blueMove()
+        red_move = self.redMove()
+        if blue_move.priority and not red_move.priority:
+            self.blueFirst(blue_move, red_move)
+        elif red_move.priority and not blue_move.priority:
+            self.redFirst(blue_move, red_move)
+        else:
+            if self.blue.speed > self.red.speed:
+                self.blueFirst(blue_move, red_move)
+            else:
+                self.redFirst(blue_move, red_move)

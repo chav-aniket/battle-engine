@@ -36,7 +36,7 @@ if __name__ == "__main__":
             print("Please input a valid number")
         else:
             break
-    if user:
+    if user == 1:
         Battle(Turtwig(), Chimchar())
     else:
         Battle(Chimchar(), Turtwig())
