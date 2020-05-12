@@ -31,80 +31,26 @@ class Element:
     DARK        = 14
 
     MATCHUPS = [
-        [1, 1, 1, 1, 1, 1, 1, 0.5, 1, 1, 0.5, 1, 1, 1, 1], # BASIC
-        [1, 0.5, 0.5, 2, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1], # FIRE
-        [1, 2, 0.5, 0.5, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1], # WATER
-        [1, 0.5, 2, 0.5, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1], # GRASS
-        [1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1], # ELECTRIC
-        [1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1], # WIND
-        [1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1], # EARTH
-        [1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1], # ROCK
-        [1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1], # ICE
-        [1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1], # POISON
-        [1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1], # METAL
-        [1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1], # FIGHTING
-        [1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1], # MYSTIC
-        [1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1], # LIGHT
-        [1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1]  # DARK
+        [1, 1, 1, 1, 1, 1, 1, 0.5, 1, 1, 0.5, 1, 1, 1, 1],  # BASIC
+        [1, 0.5, 0.5, 2, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1],  # FIRE
+        [1, 2, 0.5, 0.5, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1],  # WATER
+        [1, 0.5, 2, 0.5, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1],  # GRASS
+        [1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1],      # ELECTRIC
+        [1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1],      # WIND
+        [1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1],      # EARTH
+        [1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1],      # ROCK
+        [1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1],      # ICE
+        [1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1],      # POISON
+        [1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1],      # METAL
+        [1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1],      # FIGHTING
+        [1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1],      # MYSTIC
+        [1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1],      # LIGHT
+        [1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1]       # DARK
     ]
 
     @classmethod
     def multiplier(cls, type1, type2):
-        return MATCHUPS[type1, type2]
-
-    # WEAKNESS = {
-    #     BASIC: [FIGHTING],
-    #     WATER: [],
-    #     GRASS: [],
-    #     FIRE: [],
-    #     ELECTRIC: [],
-    #     WIND: [],
-    #     EARTH: [],
-    #     ROCK: [],
-    #     ICE: [],
-    #     POISON: [],
-    #     METAL: [],
-    #     LIGHT: [],
-    #     DARK: [],
-    #     MYSTIC: [],
-    #     FIGHTING: []
-    # }
-
-    # RESISTANT = {
-    #     BASIC: [FIGHTING],
-    #     WATER: [],
-    #     GRASS: [],
-    #     FIRE: [],
-    #     ELECTRIC: [],
-    #     WIND: [],
-    #     EARTH: [],
-    #     ROCK: [],
-    #     ICE: [],
-    #     POISON: [],
-    #     METAL: [],
-    #     LIGHT: [],
-    #     DARK: [],
-    #     MYSTIC: [],
-    #     FIGHTING: []
-    # }
-
-    #  IMMUNE = {
-    #     BASIC: [FIGHTING],
-    #     WATER: [],
-    #     GRASS: [],
-    #     FIRE: [],
-    #     ELECTRIC: [],
-    #     WIND: [],
-    #     EARTH: [],
-    #     ROCK: [],
-    #     ICE: [],
-    #     POISON: [],
-    #     METAL: [],
-    #     LIGHT: [],
-    #     DARK: [],
-    #     MYSTIC: [],
-    #     FIGHTING: []
-    }
+        return cls.MATCHUPS[type1][type2]
 
 class Monster:
     '''
@@ -157,13 +103,14 @@ class Move:
     SPEC = 1
     STAT = 2
 
-    def __init__(self, name, element=Element.BASIC, cat=PHYS, dmg=0, heal=0, uses=10):
+    def __init__(self, name, element=Element.BASIC, cat=PHYS, dmg=0, heal=0, accuracy=100, uses=10):
         self.name = name
+        self.owner = None
         self.category = cat
         self.element = element
-        self.owner = None
         self.damage = dmg
         self.heal = heal
+        self.accuracy = accuracy
         self.max_uses = uses
         self.uses = uses
     
@@ -184,19 +131,9 @@ class Move:
             dmg = self.use_attack(opponent)
             heal = self.use_regen()
 
-    def modifier(self, opponent):
-        ret = 1
-        if self.element == self.owner.element:
-            ret += 0.2
-        # if opponent.element in WEAKNESSES[self.element]:
-        #     ret += 0.2
-        # if opponent.element in RESISTANCES[self.element]:
-        #     ret -= 0.2
-        return ret
-
     def use_attack(self, opponent: Monster):
-        dmg = (7 + self.owner.level/200 * self.damage * self.owner.attack/opponent.defence) * self.modifier(opponent)
-        # dmg = (self.owner.attack * self.damage) * (100/(100+opponent.defence))
+        mul = Element.multiplier(self.element, opponent.element)
+        dmg = round((7 + (self.owner.level/200) * self.damage * (self.owner.attack/opponent.defence)) * mul)
         opponent.take(dmg)
         return dmg
 
